@@ -1,29 +1,13 @@
-(function() {
-  var Player, axes, createEnemies, gameBoard, gameOptions, gameStats, play, players, render, updateBestScore, updateScore,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var body = d3.select("body").append("svg:svg");
+var data = new Array(30);
 
-  gameOptions = {
-    height: 550,
-    width: 900,
-    nEnemies: 30,
-    padding: 20
-  };
-
-  gameStats = {
-    score: 0,
-    bestScore: 0
-  };
-
-  axes = {
-    x: d3.scale.linear().domain([0, 100]).range([0, gameOptions.width]),
-    y: d3.scale.linear().domain([0, 100]).range([0, gameOptions.height])
-  };
-
-  gameBoard = d3.select('.box')
-                  .append('svg:svg')
-                    .attr('width', gameOptions.width)
-                    .attr('height', gameOptions.height);
-
-
-
-}).call(this);
+body.selectAll("circle")
+    .data(data)
+      .enter().append("circle")
+        .attr("cx", function() { return Math.floor(Math.random()*2000)})
+        .attr("cy", function() { return Math.floor(Math.random()*1000)})
+        .attr("r", 10);
+// d3.selectAll("circle").transition()
+//     .duration(750)
+//     .delay(function(d, i) { return i * 10; })
+//     .attr("r", function(d) { return Math.sqrt(d * scale); });
