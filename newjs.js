@@ -17,25 +17,19 @@ var tempScore = 0;
 var highScore = 0;
 var score = 0;
 
+var tempScoreFn = function(){
+  tempScore++;
+  d3.select('#score').text(tempScore);
+};
+
 var updateScore = function(){
-  if (!score){
-    score = tempScore;
-    highScore = tempScore;
-    tempScore = 0;
-    d3.select('#score').text(score);
-    d3.select('#highScore').text(highScore);
-  }
-  else {
-    score = tempScore;
-    // tempScore = 0;
-    if (score <= highScore){
-      d3.select('#score').text(score);
-    } else {
-      highScore = score;
-      d3.select('#score').text(score);
+    if (tempScore >= highScore){
+      highScore = tempScore;
+      tempScore = 0;
       d3.select('#highScore').text(highScore);
+    } else {
+      tempScore = 0;
     }
-  }
 };
 
 var distance = function(player, enemy) {
@@ -48,7 +42,6 @@ var distance = function(player, enemy) {
 
 var checkCollision = function(enemy){
   if(distance(player, enemy) < 20) {
-    tempScore++;
     updateScore();
   }
 };
@@ -84,6 +77,7 @@ var update = function() {
 first();
 update();
 
+setInterval(function(){tempScoreFn();}, 50);
 setInterval(function(){
   update();
 }, 3000);
