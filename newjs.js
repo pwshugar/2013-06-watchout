@@ -3,6 +3,63 @@ var body = d3.select('svg');
 
 var data = new Array(30);
 
+var moveObject = function(x,y){
+  var x = +d3.select(this).attr("cx");
+  var y = +d3.select(this).attr("cy");
+  x+=d3.event.dx;
+  y+=d3.event.dy;
+  d3.select(this).attr("cx",x);
+  d3.select(this).attr('cy', y);
+};
+
+
+var tempScore = 0;
+var highScore = 0;
+var score = 0;
+
+var updateScore = function(){
+  if (!score){
+    score = tempScore;
+    highScore = tempScore;
+    tempScore = 0;
+    d3.select('#score').text(score);
+    d3.select('#highScore').text(highScore);
+  }
+  else {
+    score = tempScore;
+    // tempScore = 0;
+    if (score <= highScore){
+      d3.select('#score').text(score);
+    } else {
+      highScore = score;
+      d3.select('#score').text(score);
+      d3.select('#highScore').text(highScore);
+    }
+  }
+};
+
+var distance = function(player, enemy) {
+  var dx = player.attr('cx') - enemy.attr('cx');
+  var dy = player.attr('cy') - enemy.attr('cy');
+  dx = dx * dx;
+  dy = dy * dy;
+  return Math.sqrt( dx + dy );
+};
+
+var checkCollision = function(enemy){
+  if(distance(player, enemy) < 20) {
+    tempScore++;
+    updateScore();
+  }
+};
+
+var tweenWithCollisionDetection = function(){
+  var enemy = d3.select(this);
+  return function(t) {
+    checkCollision(enemy);
+  };
+};
+
 var first = function(){
   body.selectAll("circle")
     .data(data)
@@ -20,7 +77,8 @@ var update = function() {
           .duration(3000)
             .attr("cx", function() { return Math.floor(Math.random()*1960)})
             .attr("cy", function() { return Math.floor(Math.random()*900)})
-            .attr("r", 10);
+            .attr("r", 10)
+              .tween('custom', tweenWithCollisionDetection);
 };
 
 first();
@@ -37,12 +95,3 @@ var player = body.append("circle")
     .attr("fill", "blue")
       .call(d3.behavior.drag()
         .on("drag", function(d) {moveObject.call(this);}));
-
-var moveObject = function(x,y){
-  var x = +d3.select(this).attr("cx");
-  var y = +d3.select(this).attr("cy");
-  x+=d3.event.dx;
-  y+=d3.event.dy;
-  d3.select(this).attr("cx",x);
-  d3.select(this).attr('cy', y);
-};
