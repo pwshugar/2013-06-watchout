@@ -1,7 +1,7 @@
 d3.select("#body").append("svg");
 var body = d3.select('svg');
 
-var data = new Array(30);
+var data = new Array(50);
 
 var moveObject = function(x,y){
   var x = +d3.select(this).attr("cx");
@@ -15,7 +15,6 @@ var moveObject = function(x,y){
 
 var tempScore = 0;
 var highScore = 0;
-var score = 0;
 
 var tempScoreFn = function(){
   tempScore++;
@@ -23,6 +22,9 @@ var tempScoreFn = function(){
 };
 
 var updateScore = function(){
+    if (tempScore > 999) {
+      alert('Whoa!');
+    }
     if (tempScore >= highScore){
       highScore = tempScore;
       tempScore = 0;
